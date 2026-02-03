@@ -1,0 +1,8 @@
+name = "absensi-mi-islamadina"
+compatibility_date = "2024-01-30"
+pages_build_output_dir = "public"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "db-absensi-mi"
+database_id = "2ea86301-659c-4807-b54c-e8f5429cae84" # ID ini hanya placeholder untuk local dev

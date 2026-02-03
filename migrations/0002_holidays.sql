@@ -1,0 +1,7 @@
+-- Migration number: 0002 	 2024-02-03T00:00:00.000Z
+CREATE TABLE IF NOT EXISTS holidays (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  holiday_date TEXT NOT NULL UNIQUE, -- Format YYYY-MM-DD
+  description TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);

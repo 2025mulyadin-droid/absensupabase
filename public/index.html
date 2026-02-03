@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Absensi MI ISLAMADINA</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Absensi MI ISLAMADINA</h1>
+      <p>Silakan isi kehadiran Anda hari ini</p>
+    </header>
+
+    <div class="card">
+      <div class="form-group">
+        <label for="userSelect">Nama Lengkap</label>
+        <select id="userSelect">
+          <option value="">-- Pilih Nama Anda --</option>
+          <!-- Options loaded via JS -->
+        </select>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-hadir" onclick="submitAttendance('Hadir')">
+          <span>✅</span> Hadir
+        </button>
+        <button class="btn btn-sakit" onclick="submitAttendance('Sakit')">
+          <span>💊</span> Sakit
+        </button>
+        <button class="btn btn-izin" onclick="submitAttendance('Izin')">
+          <span>📝</span> Izin
+        </button>
+      </div>
+
+      <p id="loadingMsg" style="display:none; text-align:center; margin-top:10px; color:var(--text-secondary);">
+        Memproses...</p>
+    </div>
+
+    <div class="card">
+      <h3>Daftar Hadir Hari Ini</h3>
+      <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:1rem;" id="currentDateDisplay"></p>
+
+      <ul class="history-list" id="todayList">
+        <!-- List items loaded via JS -->
+      </ul>
+
+      <h4
+        style="margin-top: 2rem; margin-bottom: 1rem; color: var(--text-secondary); border-top: 1px solid var(--border); padding-top: 1rem;">
+        ⚠️ Belum Absen
+      </h4>
+      <ul class="history-list" id="notPresentList">
+        <!-- Loaded via JS -->
+      </ul>
+    </div>
+
+    <div style="text-align: center; display: flex; flex-direction: column; gap: 10px;">
+      <a href="/laporan.html" class="nav-link">Lihat Laporan Absensi →</a>
+      <a href="/admin.html" class="nav-link" style="font-size: 0.8rem; color: #94a3b8;">Panel Admin</a>
+    </div>
+  </div>
+
+  <!-- Custom Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div id="modalIcon" style="font-size: 3rem; margin-bottom: 1rem;"></div>
+      <h3 id="modalTitle">Title</h3>
+      <p id="modalMessage">Message</p>
+      <button onclick="closeModal()">Tutup</button>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+
+
+</html>

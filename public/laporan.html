@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Absensi - MI ISLAMADINA</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container container-wide">
+        <header>
+            <h1>Laporan Absensi</h1>
+            <p>Rekapitulasi kehadiran guru & karyawan</p>
+        </header>
+
+        <div class="card">
+            <div class="form-group">
+                <label>Rentang Tanggal</label>
+                <div class="btn-group" style="margin-bottom: 1rem;">
+                    <input type="date" id="startDate">
+                    <input type="date" id="endDate">
+                </div>
+                <button class="btn btn-hadir" style="width:100%;" onclick="loadReport()">Tampilkan Laporan</button>
+            </div>
+        </div>
+
+        <div id="reportResult" style="display: none;">
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">Rekapitulasi</h3>
+                <div class="table-wrapper">
+                    <table id="summaryTable">
+                        <thead>
+                            <tr>
+                                <!-- Dynamic Headers -->
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <button class="btn btn-export" onclick="exportToExcel()">📥 Download Excel</button>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">Log Detail</h3>
+                <div class="table-container">
+                    <table id="detailTable">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Nama</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <a href="/" class="nav-link">← Kembali ke Absensi</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+    <script src="/js/report.js"></script>
+</body>
+
+</html>
