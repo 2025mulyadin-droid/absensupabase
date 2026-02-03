@@ -60,7 +60,7 @@ export async function onRequestPost(context) {
             .maybeSingle();
 
         if (holiday) {
-            return new Response(JSON.stringify({ error: `Hari ini libur: ${holiday.description || 'Tanpa keterangan'}` }), { status: 400 });
+            return new Response(JSON.stringify({ Mohon Maaf: `Absensi ditutup Karena Hari ini libur: ${holiday.description || 'Tanpa keterangan'}` }), { status: 400 });
         }
 
         // Insert
@@ -81,3 +81,4 @@ export async function onRequestPost(context) {
         return new Response(JSON.stringify({ error: e.message }), { status: 500 });
     }
 }
+
