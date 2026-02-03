@@ -99,8 +99,9 @@ async function loadTodayAttendance() {
                 let timeStr = '';
                 if (item.created_at) {
                     try {
-                        const dateVal = item.created_at.replace(' ', 'T');
-                        const absDate = new Date(dateVal);
+                        // Supabase can return "YYYY-MM-DD HH:MM:SS+00" - sanitize it
+                        const sanitized = item.created_at.trim().replace(' ', 'T');
+                        const absDate = new Date(sanitized);
 
                         if (!isNaN(absDate.getTime())) {
                             timeStr = absDate.toLocaleTimeString('id-ID', {
@@ -110,25 +111,23 @@ async function loadTodayAttendance() {
                                 timeZone: 'Asia/Jakarta'
                             });
 
-                            const parts = new Intl.DateTimeFormat('id-ID', {
-                                hour: 'numeric',
-                                minute: 'numeric',
-                                hour12: false,
-                                timeZone: 'Asia/Jakarta'
-                            }).formatToParts(absDate);
+                            // Keterlambatan logic (07:00 WIB)
+                            const jktParts = new Intl.DateTimeFormat('id-ID', { hour: 'numeric', minute: 'numeric', hour12: false, timeZone: 'Asia/Jakarta' }).formatToParts(absDate);
+                            const h = parseInt(jktParts.find(p => p.type === 'hour').value);
+                            const m = parseInt(jktParts.find(p => p.type === 'minute').value);
 
-                            const hourWib = parseInt(parts.find(p => p.type === 'hour').value);
-                            const minWib = parseInt(parts.find(p => p.type === 'minute').value);
-
-                            if (item.status === 'Hadir' && (hourWib > 7 || (hourWib === 7 && minWib > 0))) {
+                            if (item.status === 'Hadir' && (h > 7 || (h === 7 && m > 0))) {
                                 isLate = true;
                             }
                         } else {
                             timeStr = '--:--';
+                            console.warn("Could not parse date:", item.created_at);
                         }
                     } catch (e) {
                         timeStr = '--:--';
                     }
+                } else {
+                    timeStr = '--:--';
                 }
 
                 const li = document.createElement('li');
