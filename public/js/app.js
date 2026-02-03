@@ -75,12 +75,11 @@ async function loadUsers() {
 }
 
 async function loadTodayAttendance() {
+    console.log("DEBUG: Memuat data absensi terbaru v2.0..."); // Untuk cek jika Javascipt sudah update
     try {
         const res = await fetch(`/api/attendance?date=${today}`);
-        if (!res.ok) {
-            console.error("Attendance fetch failed status:", res.status);
-            return;
-        }
+        if (!res.ok) return;
+
         const data = await res.json();
         const list = document.getElementById('todayList');
         const notPresentList = document.getElementById('notPresentList');
@@ -96,38 +95,30 @@ async function loadTodayAttendance() {
             data.forEach(item => {
                 attendedUserIds.add(item.user_id);
                 let isLate = false;
-                let timeStr = '';
+                let timeDisplay = '--:--';
+
                 if (item.created_at) {
                     try {
-                        // Supabase can return "YYYY-MM-DD HH:MM:SS+00" - sanitize it
-                        const sanitized = item.created_at.trim().replace(' ', 'T');
-                        const absDate = new Date(sanitized);
+                        const absDate = new Date(item.created_at.replace(' ', 'T'));
 
+                        // Cek apakah tanggal valid
                         if (!isNaN(absDate.getTime())) {
-                            timeStr = absDate.toLocaleTimeString('id-ID', {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: false,
-                                timeZone: 'Asia/Jakarta'
-                            });
+                            // Ambil jam dan menit secara manual agar aman di semua browser
+                            const jktOffset = 7 * 60; // WIB = UTC+7
+                            const localTime = new Date(absDate.getTime() + (jktOffset + absDate.getTimezoneOffset()) * 60000);
 
-                            // Keterlambatan logic (07:00 WIB)
-                            const jktParts = new Intl.DateTimeFormat('id-ID', { hour: 'numeric', minute: 'numeric', hour12: false, timeZone: 'Asia/Jakarta' }).formatToParts(absDate);
-                            const h = parseInt(jktParts.find(p => p.type === 'hour').value);
-                            const m = parseInt(jktParts.find(p => p.type === 'minute').value);
+                            const hh = String(localTime.getHours()).padStart(2, '0');
+                            const mm = String(localTime.getMinutes()).padStart(2, '0');
+                            timeDisplay = `${hh}:${mm}`;
 
-                            if (item.status === 'Hadir' && (h > 7 || (h === 7 && m > 0))) {
+                            // Keterlambatan logic (07:00)
+                            if (item.status === 'Hadir' && (localTime.getHours() > 7 || (localTime.getHours() === 7 && localTime.getMinutes() > 0))) {
                                 isLate = true;
                             }
-                        } else {
-                            timeStr = '--:--';
-                            console.warn("Could not parse date:", item.created_at);
                         }
                     } catch (e) {
-                        timeStr = '--:--';
+                        timeDisplay = '--:--';
                     }
-                } else {
-                    timeStr = '--:--';
                 }
 
                 const li = document.createElement('li');
@@ -136,7 +127,7 @@ async function loadTodayAttendance() {
                     <div style="display:flex; flex-direction:column;">
                         <span style="font-weight:600;">${item.name}</span>
                         <div style="display:flex; align-items:center; gap:0.5rem;">
-                            <span style="font-size:0.75rem; color:var(--text-secondary);">${timeStr} WIB</span>
+                            <span style="font-size:0.75rem; color:var(--text-secondary);">${timeDisplay} WIB</span>
                             ${isLate ? '<span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:700;">TERLAMBAT</span>' : ''}
                         </div>
                     </div>
