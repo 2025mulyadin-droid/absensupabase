@@ -98,28 +98,36 @@ async function loadTodayAttendance() {
                 let isLate = false;
                 let timeStr = '';
                 if (item.created_at) {
-                    // Supabase returns ISO strings, Date() parses them correctly
-                    const absDate = new Date(item.created_at);
+                    try {
+                        const dateVal = item.created_at.replace(' ', 'T');
+                        const absDate = new Date(dateVal);
 
-                    if (isNaN(absDate.getTime())) {
-                        timeStr = '--:--';
-                    } else {
-                        timeStr = absDate.toLocaleTimeString('id-ID', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: false,
-                            timeZone: 'Asia/Jakarta'
-                        });
+                        if (!isNaN(absDate.getTime())) {
+                            timeStr = absDate.toLocaleTimeString('id-ID', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: false,
+                                timeZone: 'Asia/Jakarta'
+                            });
 
-                        // Logic for "TERLAMBAT" (Late)
-                        // threshold: 07:00 WIB
-                        // Using Intl.DateTimeFormat to get parts in Jakarta timezone
-                        const hourWib = parseInt(new Intl.DateTimeFormat('id-ID', { hour: '2-digit', hour12: false, timeZone: 'Asia/Jakarta' }).format(absDate));
-                        const minWib = parseInt(new Intl.DateTimeFormat('id-ID', { minute: '2-digit', timeZone: 'Asia/Jakarta' }).format(absDate));
+                            const parts = new Intl.DateTimeFormat('id-ID', {
+                                hour: 'numeric',
+                                minute: 'numeric',
+                                hour12: false,
+                                timeZone: 'Asia/Jakarta'
+                            }).formatToParts(absDate);
 
-                        if (item.status === 'Hadir' && (hourWib > 7 || (hourWib === 7 && minWib > 0))) {
-                            isLate = true;
+                            const hourWib = parseInt(parts.find(p => p.type === 'hour').value);
+                            const minWib = parseInt(parts.find(p => p.type === 'minute').value);
+
+                            if (item.status === 'Hadir' && (hourWib > 7 || (hourWib === 7 && minWib > 0))) {
+                                isLate = true;
+                            }
+                        } else {
+                            timeStr = '--:--';
                         }
+                    } catch (e) {
+                        timeStr = '--:--';
                     }
                 }
 
