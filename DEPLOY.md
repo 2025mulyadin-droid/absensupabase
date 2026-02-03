@@ -66,7 +66,7 @@ Panduan ini menjelaskan langkah-langkah untuk mendeloy aplikasi absensi mengguna
    - Di dashboard Cloudflare, buka **Workers & Pages** > **Create application** > **Pages** > **Connect to Git**.
 2. **Konfigurasi Build**:
    - **Framework preset**: `None`.
-   - **Build command**: (Kosongkan).
+   - **Build command**: `npm install` (Sangat Penting: Agar Supabase-js terinstall).
    - **Build output directory**: `public`.
 3. **Environment Variables (PENTING)**:
    - Sebelum klik deploy, masuk ke tab **Environment Variables** (atau setting ini bisa diatur setelah deploy pertama di tab Settings).
